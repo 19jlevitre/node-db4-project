@@ -5,6 +5,36 @@ exports.up = function(knex) {
         table.increments('recipe_id')
         table.string('recipe_name', 128)
         .notNullable()
+        
+    })
+    .createTable('ingredients', table => {
+        table.increments('ingredient_id')
+        table.string('ingredient_name', 128)
+            .notNullable()
+        table.string('ingredient_unit', 128)
+            .notNullable()
+    })
+    .createTable('steps', table => {
+        table.increments('step_id')
+        table.integer('step_number')
+        table.string('step_instructions', 128)
+        .notNullable()
+        table.integer('recipe_id')
+            .unsigned()
+            .notNullable()
+            .references('recipe_id')
+            .inTable('recipes')
+            .onDelete("RESTRICT")
+            .onUpdate("RESTRICT")
+    })
+    .createTable('step_ingredients', table => {
+        table.increments('quantity_id')
+        table.integer('ingredient_id')
+            .unsigned()
+            .references('ingredient_id')
+            .inTable('ingredients')
+            .onDelete("RESTRICT")
+            .onUpdate("RESTRICT")
         table.integer('step_id')
             .unsigned()
             .notNullable()
@@ -12,25 +42,16 @@ exports.up = function(knex) {
             .inTable('steps')
             .onDelete("RESTRICT")
             .onUpdate("RESTRICT")
-    })
-    .createTable('steps', table => {
-        table.increments('step_id')
-        table.integer('step_number')
-        table.string('step_instructions', 128)
+        table.float('quantity')
         .notNullable()
-    })
-    .createTable('ingredients', table => {
-        table.increments('ingredient_id')
-    })
-    .createTable('quantities', table => {
-        table.increments('quantity_id')
+
     })
 };
 
 exports.down = function(knex) {
     return knex.schema
-    .dropTableIfExists('quantities')
-    .dropTableIfExists('ingredients')
+    .dropTableIfExists('step_ingredients')
     .dropTableIfExists('steps')
+    .dropTableIfExists('ingredients')
     .dropTableIfExists('recipes')
 };
