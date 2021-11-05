@@ -5,7 +5,6 @@ exports.up = function(knex) {
         table.increments('recipe_id')
         table.string('recipe_name', 128)
         .notNullable()
-        
     })
     .createTable('ingredients', table => {
         table.increments('ingredient_id')
@@ -28,7 +27,7 @@ exports.up = function(knex) {
             .onUpdate("RESTRICT")
     })
     .createTable('step_ingredients', table => {
-        table.increments('quantity_id')
+        table.increments('step_ingredients_id')
         table.integer('ingredient_id')
             .unsigned()
             .references('ingredient_id')
